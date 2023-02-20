@@ -12,7 +12,7 @@ void lcdShiftLeft(void){
 
 void lcdSetCursor(char linha, char coluna){
     char posicao;
-    
+    // Subtrai 1 pois endereço começa em 0
     if(linha == 1) posicao = 0x80 + (coluna - 1);
     if(linha == 2) posicao = 0xC0 + (coluna - 1);
     
@@ -21,6 +21,7 @@ void lcdSetCursor(char linha, char coluna){
 }
 
 void lcdString(char *str){ 
+    // Enquanto o caracter não for nulo
     while(*str){
         lcdComando(1, *str);
         str++;
@@ -75,6 +76,7 @@ void lcdComando(unsigned char tipo, unsigned char com){
     RS = tipo;
     __delay_ms(1);
     CLOCK = 0;
+    // Envia primeiro a parte alta
     D4 = com & 0x10 ? 1 : 0;
     D5 = com & 0x20 ? 1 : 0;
     D6 = com & 0x40 ? 1 : 0;

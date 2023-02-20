@@ -31,14 +31,18 @@ void main(void){
     ANSELD = 0;
     lcdInit();
     
+    // Habilita níveis de prioridade
     RCONbits.IPEN = 1;
     
+    // Habilita interrupções
     INTCONbits.GIE = 1;
     INTCONbits.PEIE = 1;
     
+    // Habilita interrupção por INT0
     INTCONbits.INT0IE = 1;
     INTCON2bits.INTEDG0 = 1;
     
+    // Habilita interrupção por INT1
     INTCON3bits.INT1IE = 1;
     INTCON3bits.INT1IP = 0;
     INTCON2bits.INTEDG1 = 1;
