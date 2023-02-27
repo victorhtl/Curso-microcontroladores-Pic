@@ -1,2 +1,0 @@
-config.h é o arquivo contendo os bits de configuração somente
-para o PIC18F45k22
