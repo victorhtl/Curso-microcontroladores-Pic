@@ -1,62 +1,87 @@
+/*
+ Protocolo controle de pinos do PORTB
+
+ * { - Inicio
+ * } - Fim
+ * PIN - Endereço
+ * x - Subendereço
+ * S - Status
+ * C1 - Liga
+ * C2 - Desliga
+  
+ * {PIN1C1} Aciona o pino 1
+ * {PIN3S}  Retorna o status do pino 3
+ 
+ */
+
 #include "../Bibliotecas/LCD4bits.h"
 #include "../Bibliotecas/config.h"
+#include "../Bibliotecas/UART.h"
 
 #define _XTAL_FREQ 8000000
+#define MAX 16
 
-// Array que vai salvar o protocolo
-volatile char pacote[10], * protocolo;
-volatile unsigned char salvando = 0, decodificar = 0;
-
-// Prototipos de funções
-void uartSend(char dado);
-char uartReceive(void);
-void uartInit(void);
-void uartString(char *string);
-void decode(void);
+volatile char pacote[MAX], *protocolo;
+volatile char decodificar = 0;
 
 void __interrupt(high_priority) UARTINT(void){
+    
     char data;
-    static char controle = 0;
+    static char salvando = 0, controle = 0;
+    
     if(RCSTA1bits.OERR == 1){ 
         RCSTA1bits.CREN = 0;  
         RCSTA1bits.CREN = 1;
     }
+    
     data = RCREG1;
+    
+    // Inicia o protocolo
     if(data == '{' && !salvando){
-        // Inicia o protocolo
         protocolo = pacote;
         salvando = 1;
     }
+    
+    // Finaliza o protocolo
     else if(data == '}' && salvando){
-        // Encerra o protocolo
+        *protocolo = '\0';
         salvando = 0;
         decodificar = 1;
+        controle = 0;
     }
-    else if (salvando && controle < 10){
-        // Salva o protocolo
+    
+    // Salva o protocolo
+    else if(salvando && controle < MAX){
         *protocolo = data;
         protocolo++;
         controle++;
     }
-    else if (controle >= 10){
-        // Se passar da quantidade maxima de caracteres
-        // Esvazia o buffer
-        data = RCREG1;
-        // Envia mensagem de erro
-        uartString("Erro");
-        // Reinicia o processo
+    
+    // Controle do tamanhos
+    else if (controle >= MAX){
+        TXREG1 = 'E';
+        while(!TXSTA1bits.TRMT);
+        TXREG1 = 'R';
+        while(!TXSTA1bits.TRMT);
+        TXREG1 = 'R';
+        while(!TXSTA1bits.TRMT);
+        TXREG1 = 'O';
+        while(!TXSTA1bits.TRMT);
         salvando = 0;
         controle = 0;
     }
-    RC1IF = 0;
+    
+    PIR1bits.RC1IF = 0;
 }
+
+void decode(void);
 
 void main(void) {
     TRISB = 0;
     PORTB = 0;
     ANSELB = 0;
     
-    uartInit();
+    uartInit(57600);
     lcdInit();
     
     // Configuração global das interrupções
@@ -83,79 +108,63 @@ void main(void) {
 void decode(void){
     INTCONbits.GIEH = 0;
     if(pacote[0] == 'P' && pacote[1] == 'I' && pacote[2] == 'N'){
-        switch (pacote[3]){
-            case '0':
-                if (pacote[4] == 'S'){
-                    if(PORTBbits.RB0)
-                        uartString("Ligado");
-                    else
-                        uartString("Desligado");
-                }
-                if (pacote[4] == 'O' && pacote[5] == 'N'){
-                    PORTBbits.RB0 = 1;
-                }
-                if (pacote[4] == 'O' && pacote[5] == 'F' && pacote[6] == 'F'){
-                    PORTBbits.RB0 = 0;
-                }
-                break;
-            case '1':
-                if (pacote[4] == 'S'){
-                    if(PORTBbits.RB1)
-                        uartString("Ligado");
-                    else
-                        uartString("Desligado");
-                }
-                if (pacote[4] == 'O' && pacote[5] == 'N'){
-                    PORTBbits.RB1 = 1;
-                }
-                if (pacote[4] == 'O' && pacote[5] == 'F' && pacote[6] == 'F'){
-                    PORTBbits.RB1 = 0;
-                }    
-                break;
+        if (pacote[4] == 'S'){
+            switch (pacote[3]){
+                case '0':
+                    PORTBbits.RB0 ? uartString("Ligado") : uartString("Desligado");
+                    break;
+                case '1':
+                    PORTBbits.RB1 ? uartString("Ligado") : uartString("Desligado");
+                    break;
+                case '2':
+                    PORTBbits.RB2 ? uartString("Ligado") : uartString("Desligado");
+                    break;
+                case '3':
+                    PORTBbits.RB3 ? uartString("Ligado") : uartString("Desligado");
+                    break;
+                case '4':
+                    PORTBbits.RB4 ? uartString("Ligado") : uartString("Desligado");
+                    break;
+                case '5':
+                    PORTBbits.RB5 ? uartString("Ligado") : uartString("Desligado");
+                    break;
+                case '6':
+                    PORTBbits.RB6 ? uartString("Ligado") : uartString("Desligado");
+                    break;
+                case '7':
+                    PORTBbits.RB7 ? uartString("Ligado") : uartString("Desligado");
+                    break;      
+            }
+        }
+        else if (pacote[4] == 'C'){
+            switch (pacote[3]){
+                case '0':
+                    PORTBbits.RB0 = pacote[5] - '0';
+                    break;
+                case '1':
+                    PORTBbits.RB1 = pacote[5] - '0';
+                    break;
+                case '2':
+                    PORTBbits.RB2 = pacote[5] - '0';
+                    break;
+                case '3':
+                    PORTBbits.RB3 = pacote[5] - '0';
+                    break;
+                case '4':
+                    PORTBbits.RB4 = pacote[5] - '0';
+                    break;
+                case '5':
+                    PORTBbits.RB5 = pacote[5] - '0';
+                    break;
+                case '6':
+                    PORTBbits.RB6 = pacote[5] - '0';
+                    break;
+                case '7':
+                    PORTBbits.RB7 = pacote[5] - '0';
+                    break;      
+            }
         }
     }
-    
-    
     decodificar = 0;
     INTCONbits.GIEH = 1;
-}
-
-void uartInit(void){
-    ANSELC = 0;
-    
-    // Config pinos de comunicação
-    TRISCbits.RC6 = 0; // Pino RX
-    TRISCbits.RC7 = 1; // Pino TX
-    
-    RCSTA1bits.SPEN = 1; // Chave geral
-    TXSTA1bits.TXEN = 1; // Habilita a transmissão
-    RCSTA1bits.CREN = 1; // Habilita recepção
-    
-    // BaudRate 9600
-    BAUDCON1bits.BRG16 = 0; // Modo 8-bits
-    TXSTA1bits.BRGH = 0;    // low speed
-    TXSTA1bits.SYNC = 0;    // Modo assíncrono
-    SPBRG1 = 12;
-    SPBRGH1 = 0;
-    
-    // Apagar os buffers
-    RC1REG = 0;
-    TX1REG = 0;
-}
-
-void uartSend(char dado){
-    while(!TXSTA1bits.TRMT);
-    TXREG1 = dado;
-}
-
-char uartReceive(void){
-    while(!PIR1bits.RC1IF);
-    return RCREG1;
-}
-
-void uartString(char *string){
-    while(*string){
-        uartSend(*string);
-        string++;
-    }
 }
