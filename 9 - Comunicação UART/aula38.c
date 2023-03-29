@@ -7,16 +7,19 @@
  * x - Subendereço
  * S - Status
  * C1 - Liga
- * C2 - Desliga
+ * C0 - Desliga
   
  * {PIN1C1} Aciona o pino 1
  * {PIN3S}  Retorna o status do pino 3
  
+ * {LEADC}
  */
 
 #include "../Bibliotecas/LCD4bits.h"
 #include "../Bibliotecas/config.h"
 #include "../Bibliotecas/UART.h"
+#include "../Bibliotecas/ADC.h"
+#include <stdio.h>
 
 #define _XTAL_FREQ 8000000
 #define MAX 16
@@ -83,6 +86,7 @@ void main(void) {
     
     uartInit(57600);
     lcdInit();
+    adcInit();
     
     // Configuração global das interrupções
     INTCONbits.GIEH = 1;
@@ -106,6 +110,10 @@ void main(void) {
 }
 
 void decode(void){
+    char string[16];
+    int leitura_adc;
+    float tensao;
+    
     INTCONbits.GIEH = 0;
     if(pacote[0] == 'P' && pacote[1] == 'I' && pacote[2] == 'N'){
         if (pacote[4] == 'S'){
@@ -139,7 +147,7 @@ void decode(void){
         else if (pacote[4] == 'C'){
             switch (pacote[3]){
                 case '0':
-                    PORTBbits.RB0 = pacote[5] - '0';
+                    PORTBbits.RB0 = pacote[5] - '0';  
                     break;
                 case '1':
                     PORTBbits.RB1 = pacote[5] - '0';
@@ -165,6 +173,14 @@ void decode(void){
             }
         }
     }
+    
+    if(pacote[0] == 'L' && pacote[1] == 'E' && pacote[2] == 'A' && pacote[3] == 'D' && pacote [4] == 'C'){
+        leitura_adc = adcRead();
+        tensao = (float) leitura_adc * 5./1023.;
+        //sprintf(string, "Tensao %.2f ", tensao);
+        uartString(string);
+    }
+    
     decodificar = 0;
     INTCONbits.GIEH = 1;
 }
