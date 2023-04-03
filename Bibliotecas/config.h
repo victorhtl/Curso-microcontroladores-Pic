@@ -1,5 +1,5 @@
-#ifndef XC_HEADER_TEMPLATE_H
-#define	XC_HEADER_TEMPLATE_H
+#ifndef CONFIG_H
+#define	CONFIG_H
 
 // CONFIG1H
 #pragma config FOSC = HSMP      // Oscillator Selection bits (HS oscillator (medium power 4-16 MHz))
