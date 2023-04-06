@@ -1,22 +1,27 @@
+/*
+PIC18F45K22
+ManipulaÃ§Ã£o da EEPROM interna
+*/
+
 #ifndef _EEPROM_H_
 #define	_EEPROM_H_
 
 // Escreve 1 byte na EEPROM interna
-// ADDR -> endereço de memória
+// ADDR -> endereï¿½o de memï¿½ria
 // DATA -> byte a ser gravado
 void eepromWrite(char ADDR, char DATA);
 
-// Lê 1 byte da EEPROM interna
-// ADDR -> endereço da memória
+// Lï¿½ 1 byte da EEPROM interna
+// ADDR -> endereï¿½o da memï¿½ria
 char eepromRead(char ADDR);
 
 // Escreve um Inteiro na EEPROM interna
-// ADDR -> endereço de memória
+// ADDR -> endereï¿½o de memï¿½ria
 // DATA -> Inteiro a ser gravado
 void eepromWriteInt(char ADDR, int DATA);
 
-// Lê um Inteiro na EEPROM interna
-// ADDR -> endereço a ser lido
+// Lï¿½ um Inteiro na EEPROM interna
+// ADDR -> endereï¿½o a ser lido
 int eepromReadInt(char ADDR);
 
 // Escreve um Long Int na EEPROM interna
@@ -31,13 +36,13 @@ void eepromWriteFloat(char ADDR, float DATA);
 // Le um float da EEPROM
 float eepromReadFloat(char ADDR);
 
-// Escreve um array na memória
-// Necessário passar o tamanho exato do array
+// Escreve um array na memï¿½ria
+// Necessï¿½rio passar o tamanho exato do array
 void eepromWriteArray(char ADDR, char tamanho, char *ARRAY);
 
-// Le um array da memória
-// Necessário passar o tamnho exato do array
-// Recebe o array que será populado
+// Le um array da memï¿½ria
+// Necessï¿½rio passar o tamnho exato do array
+// Recebe o array que serï¿½ populado
 void eepromReadArray(char ADDR, char tamanho, char *ARRAY);
 
 #include <xc.h>

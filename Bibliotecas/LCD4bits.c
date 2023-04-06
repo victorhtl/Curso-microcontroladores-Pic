@@ -28,6 +28,11 @@ void lcdString(char *str){
     }
 }
 
+void lcdStringCursor(char linha, char coluna, char *str){
+    lcdSetCursor(linha, coluna);
+    lcdString(str);
+}
+
 void lcdClean(void){
     lcdComando(0, 0x01);
     __delay_ms(1);

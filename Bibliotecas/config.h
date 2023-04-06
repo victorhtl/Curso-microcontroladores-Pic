@@ -1,3 +1,7 @@
+/*
+Configurations bits do PIC18F45k22
+*/
+
 #ifndef CONFIG_H
 #define	CONFIG_H
 
