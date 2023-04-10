@@ -32,7 +32,7 @@ void main(void) {
     I2C_Write(0b00001111);  // Endereço de memória do dispositivo
     I2C_Rep_Start();        // Repeated Start
     I2C_Write(0b10101001);  // Endereço do dispositivo modo leitura
-    leitura = I2C_Read(0);  // Lê o dado vindo do dispositivo ('A')
+    leitura = I2C_Read(0);  // Lê o dado vindo do dispositivo ('B')
     I2C_Stop();             // Stop bit
     
     lcdClean();
