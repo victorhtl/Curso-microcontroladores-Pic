@@ -11,9 +11,7 @@
 
 unsigned char numeros_7seg[10] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90};
 
-volatile char display = 1;
-
-// As interrupções chaveiam os displays de 7 seg
+// As interrupï¿½ï¿½es chaveiam os displays de 7 seg
 void __interrupt() INT_TIMER(void){
   
     static enum {
@@ -76,7 +74,7 @@ void main(void) {
     DISPLAYD_T = 0;
     DISPLAYD_P = 0;
     
-    // Timer0 gerando interrupções a cada 2ms
+    // Timer0 gerando interrupï¿½ï¿½es a cada 2ms
     INTCONbits.GIE = 1;
     INTCONbits.PEIE = 1;
     INTCONbits.TMR0IE = 1;
