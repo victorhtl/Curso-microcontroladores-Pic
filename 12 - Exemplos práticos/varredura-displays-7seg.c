@@ -11,7 +11,9 @@
 
 unsigned char numeros_7seg[10] = {0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90};
 
-// As interrup��es chaveiam os displays de 7 seg
+int data_display[2];
+
+// As interrupções chaveiam os displays de 7 seg
 void __interrupt() INT_TIMER(void){
   
     static enum {
@@ -27,14 +29,14 @@ void __interrupt() INT_TIMER(void){
     switch(displays){
         // Unidade
         case display1:
-            DISPLAY_PORT = numeros_7seg[0];
+            DISPLAY_PORT = data_display[0];
             DISPLAYU_P = 1;
             displays = display2;
             break;
             
         // Dezena 
         case display2:
-            DISPLAY_PORT = numeros_7seg[1];
+            DISPLAY_PORT = data_display[1];
             DISPLAYD_P = 1;
             displays = display1;
             break; 
@@ -60,6 +62,9 @@ void __interrupt() INT_TIMER(void){
 } 
 
 void main(void) {
+    int count = 0;
+    int varAux;
+    
     OSCCON = 0b01100000;
     
     ANSELD = 0;
@@ -74,7 +79,7 @@ void main(void) {
     DISPLAYD_T = 0;
     DISPLAYD_P = 0;
     
-    // Timer0 gerando interrup��es a cada 2ms
+    // Timer0 gerando interrupções a cada 2ms
     INTCONbits.GIE = 1;
     INTCONbits.PEIE = 1;
     INTCONbits.TMR0IE = 1;
@@ -84,5 +89,14 @@ void main(void) {
     TMR0L = 0x0C;
     T0CONbits.TMR0ON = 1;
     
-    while(1);
+    while(1){
+        varAux = count;
+        data_display[0] = numeros_7seg[varAux%10];
+        varAux /= 10;
+        data_display[1] = numeros_7seg[varAux%10];
+        
+        count++;
+        if(count > 99) count = 0;
+        __delay_ms(500);
+    }
 }
