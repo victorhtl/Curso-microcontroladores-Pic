@@ -20,7 +20,12 @@ void adcInit(void){
  * configurar seu circuito analogico (ANSEL)
 */
 int adcRead(char ch){
-    ADCON0 = ch;        // Canal de leitura analogica
+    char canal;
+    canal = ch << 2;
+
+    if(canal > 25) return 0;
+
+    ADCON0 = canal; 
 
     ADCON0bits.ADON = 1;
     ADCON0bits.GO = 1;
