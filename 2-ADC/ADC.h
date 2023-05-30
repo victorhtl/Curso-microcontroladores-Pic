@@ -2,10 +2,12 @@
 #define _ADC_H_
 
 #include <xc.h>
-// Inicia conversor analógico no canal AN0
+
+// Inicializa ADC no canal AN0
 void adcInit(void);
-// Faz a conversão analógica e retorna o resultado
-// de 10 bits
-int adcRead(void);
+
+// Leitura e convers�o do canal ch (0 a 27)
+// Retorna um valor de 10 bits
+int adcRead(char ch);
 
 #endif
