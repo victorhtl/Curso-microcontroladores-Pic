@@ -37,3 +37,16 @@ int adcRead(char ch){
     ADCON0bits.ADON = 0;
     return adc.result;
 }
+
+#include "ADC.h"
+
+int canal1, canal2, canal3, canal4;
+
+adcInit();
+
+while(1){
+    canal1 = adcRead(1);
+    canal2 = adcRead(2);
+    canal3 = adcRead(3);
+    canal4 = adcRead(4);
+}
