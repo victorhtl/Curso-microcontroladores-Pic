@@ -1,0 +1,36 @@
+main
+	Task_LED0
+		_OS_EnterWaitMode
+			_OS_ClrReadySetClrCanContinue
+				_OS_SET_FSR_CUR_TASK
+		_OS_CheckEvent
+			_OS_SET_FSR_CUR_TASK
+		_OS_InitDelay
+		_OS_ReturnSave
+			_OS_SET_FSR_CUR_TASK
+	Task_LED1
+		_OS_EnterWaitMode
+			_OS_ClrReadySetClrCanContinue
+				_OS_SET_FSR_CUR_TASK
+		_OS_CheckEvent
+			_OS_SET_FSR_CUR_TASK
+		_OS_InitDelay
+		_OS_ReturnSave
+			_OS_SET_FSR_CUR_TASK
+	Task_LED2
+		_OS_EnterWaitMode
+			_OS_ClrReadySetClrCanContinue
+				_OS_SET_FSR_CUR_TASK
+		_OS_CheckEvent
+			_OS_SET_FSR_CUR_TASK
+		_OS_InitDelay
+		_OS_ReturnSave
+			_OS_SET_FSR_CUR_TASK
+	OS_Init
+	Init_MCU
+	TickTimerIE
+	_OS_Task_Create
+	_OS_JumpToTask
+		_OS_SET_FSR_CUR_TASK
+	_OS_SET_FSR_CUR_TASK
+INTERRUPT_HIGH

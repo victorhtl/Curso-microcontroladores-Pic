@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "config.h": "c",
-        "lcd4bits.h": "c"
-    }
-}
