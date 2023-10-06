@@ -1,5 +1,4 @@
-#include <pic18f45k22.h>
-
+#include "config.h"
 #include "config.h"
 #define _XTAL_FREQ 8000000
 
@@ -17,8 +16,8 @@ void main(void) {
     while(1){
         PORTD = 0xFF;
         
-        if(PORTAbits.RA4 == 0){
-            PORTD = 0;
+        if(PORTAbits.RA4 == 0){ // Se o botao for pressionado
+            PORTD = 0;          // coloca todo o PORTD em nivel logico 1
             __delay_ms(1000);
         }
     }

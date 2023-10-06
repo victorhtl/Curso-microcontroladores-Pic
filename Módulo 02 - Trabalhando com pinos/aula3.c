@@ -8,6 +8,7 @@ void main(void) {
     // PIC18F45K22
     ANSELD = 0;
     
+    // Utilizando o LAT para setar o pino RD0 para 1
     TRISD = 0;
     LATD = 1;
     
