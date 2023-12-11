@@ -1,24 +1,27 @@
 #include "config.h"
-#include "config.h"
-#define _XTAL_FREQ 8000000
 
-// RA4 -> Botao 1
-// RC0 -> Botao 2
+#define PRESSIONADO 0
+#define BOTAO PORTCbits.RC0
 
 void main(void) {
-
-    ANSELA = 0;
-    ANSELD = 0;
+    OSCCON = 0x63; // Seleciona o oscilador interno no modo 8MHz
     
-    TRISAbits.TRISA4 = 1;
+    char incrementador = 0;
+    
     TRISD = 0;
+    PORTD = 0;
+    
+    // Configura o pino RC0 como input digital
+    ANSELC = 0;
+    TRISCbits.TRISC0 = 1;
     
     while(1){
-        PORTD = 0xFF;
-        
-        if(PORTAbits.RA4 == 0){ // Se o botao for pressionado
-            PORTD = 0;          // coloca todo o PORTD em nivel logico 1
-            __delay_ms(1000);
+        if(BOTAO == PRESSIONADO){ // Se o pino for pressionado
+            incrementador++;
+            PORTD = incrementador;
+            
+            // Travo até que o botão seja solto
+            while(BOTAO == PRESSIONADO) __delay_ms(20);
         }
     }
 }

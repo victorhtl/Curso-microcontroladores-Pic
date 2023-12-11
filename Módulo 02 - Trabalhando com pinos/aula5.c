@@ -1,7 +1,11 @@
+/* Exercício de pisca */
+
+// Inclua o arquivo com os bits de configuracao
 #include "config.h"
-#define _XTAL_FREQ 8000000
 
 void main(void) {
+    OSCCON = 0x63; // Seleciona o oscilador interno no modo 8MHz
+                   // Somente se você quiser utilizar o oscilador interno !!!
     
     TRISD = 0;
     
