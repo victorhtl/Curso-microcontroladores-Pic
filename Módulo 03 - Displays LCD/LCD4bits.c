@@ -17,7 +17,6 @@ void lcdSetCursor(char linha, char coluna){
     if(linha == 2) posicao = 0xC0 + (coluna - 1);
     
     lcdComando(0, posicao);
-    
 }
 
 void lcdString(char *str){ 
@@ -38,14 +37,13 @@ void lcdClean(void){
 }
 
 void lcdInit(void){
-    DIGITAL_PORT = 0;
-    
-    DATA_TRIS = 0;
-    DATA_PORT = 0;
-    
+    // Tempo necessário para energizar o display
     __delay_ms(60);
     
-    DATA_PORT = 0x03;
+    D4 = 1;
+    D5 = 1;
+    D6 = 0;
+    D7 = 0;
     
     for(char i = 0; i<3; i++){
         CLOCK = 1;
@@ -53,7 +51,10 @@ void lcdInit(void){
         __delay_ms(5);
     }
     
-    DATA_PORT = 0x02;
+    D4 = 0;
+    D5 = 1;
+    D6 = 0;
+    D7 = 0;
     
     for(char i = 0; i<2; i++){
         CLOCK = 1;
@@ -61,7 +62,10 @@ void lcdInit(void){
         __delay_ms(5);
     }
     
-    DATA_PORT = 0;
+    D4 = 0;
+    D5 = 0;
+    D6 = 0;
+    D7 = 0;
     CLOCK = 1;
     CLOCK = 0;
     
