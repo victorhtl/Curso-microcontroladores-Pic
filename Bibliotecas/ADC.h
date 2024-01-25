@@ -1,18 +1,13 @@
-/*
- PIC18F45K22
- Codigo leitura canal AD
- */
-
 #ifndef _ADC_H_
 #define _ADC_H_
 
 #include <xc.h>
 
-// Inicializa o canal AN0
+// Inicializa ADC no canal AN0
 void adcInit(void);
 
-// Realiza a leitura
-// @return: resultado da leitura (1023bits)
-int adcRead(void);
+// Leitura e conversão do canal ch (0 a 27)
+// Retorna um valor de 10 bits
+int adcRead(char ch);
 
 #endif

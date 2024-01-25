@@ -6,15 +6,27 @@ union {
 } adc;
 
 void adcInit(void){
-    TRISAbits.TRISA0 = 1;
-    ANSELAbits.ANSA0 = 1;
-    
-    ADCON0 = 0x00;
     ADCON1 = 0x00;
     ADCON2 = 0xAA;
 }
 
-int adcRead(void){
+/**
+ * @Params: ch -> canal de leitura analógica
+ * 
+ * @Descrição: Passe como argumento o canal analógico
+ * que será feita a leitura
+ * 
+ * Lembrar de configurar o pino como entrada (TRIS) e
+ * configurar seu circuito analogico (ANSEL)
+*/
+int adcRead(char ch){
+    char canal;
+    canal = ch << 2;
+
+    if(canal > 25) return 0;
+
+    ADCON0 = canal; 
+
     ADCON0bits.ADON = 1;
     ADCON0bits.GO = 1;
     while(ADCON0bits.GO);
@@ -22,5 +34,25 @@ int adcRead(void){
     adc.leitura[1] = ADRESH;
     adc.leitura[0] = ADRESL;
     
+    ADCON0bits.ADON = 0;
     return adc.result;
 }
+
+
+/*******
+Exemplo de utilizacao
+********/
+/*
+#include "ADC.h"
+
+int canal1, canal2, canal3, canal4;
+
+adcInit(); // Inicialize o conversor
+
+while(1){
+    canal1 = adcRead(1); // Realize o processo de conversao em qualquer canal
+    canal2 = adcRead(2);
+    canal3 = adcRead(3);
+    canal4 = adcRead(4);
+}
+*/
