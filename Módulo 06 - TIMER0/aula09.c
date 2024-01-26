@@ -7,34 +7,34 @@
 
 int segundo = 0;
 
-void __interrupt() timer0(){
-    static int valor = 0;
-    valor++;
-    if(valor == 40){
-        segundo++;
-        valor = 0;
-    }
-		TMR0L = 61;
+void __interrupt(high_priority) timer0(){
+    segundo++;
+	TMR0H = 0x85;
+    TMR0L = 0xEE;
     TMR0IF = 0;
 }
 
-void main(void) {
+void main(void){
     char screenBuff[5];
-    
+
+    RCONbits.IPEN = 1;
     INTCONbits.GIE = 1;
     INTCONbits.PEIE = 1;
+
     INTCONbits.TMR0IE = 1;
-    
+    INTCONbits.TMR0IP = 1;
+    INTCONbits.TMR0IF = 0;
+
+    T0CON = 0x85;
+    TMR0H = 0x85;
+    TMR0L = 0xEE;
+
     ANSELD = 0;
     lcdInit();
-    
-    T0CON = 0xC7;
-    TMR0L = 61;
-    TMR0IF = 0;
 
     while(1){
-        sprintf(screenBuff, "%04d", segundo);
-        lcdString("Segundo = ");
+        sprintf(screenBuff, "%04d", valor);
+        lcdString("Overflow = ");
         lcdString(screenBuff);
         lcdSetCursor(1, 1);
         __delay_ms(100);

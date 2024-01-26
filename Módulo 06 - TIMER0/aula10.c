@@ -1,7 +1,3 @@
-/*
-Contagem de segundos utilizando o Timer0
-*/
-
 #include <xc.h>
 #include "../Bibliotecas/LCD4bits.h"
 #include "../Bibliotecas/config.h"
@@ -9,12 +5,14 @@ Contagem de segundos utilizando o Timer0
 
 #define _XTAL_FREQ 8000000
 
-int segundo = 0;
+union {
+    unsigned char valores[2];
+    unsigned int result;
+} timer_data;
 
 void __interrupt(high_priority) timer0(void){
-    segundo++;
-    TMR0L = 0xEE;
-    TMR0H = 0x85;
+    TMR0H = 0;
+    TMR0L = 0;
     TMR0IF = 0;
 }
 
@@ -29,17 +27,21 @@ void main(void) {
     INTCON2bits.TMR0IP = 1;
     INTCONbits.TMR0IF = 0;
     
-    T0CON = 0x85;
-    TMR0L = 0xEE;
-    TMR0H = 0x85;
+    T0CON = 0x87;
+    TMR0H = 0;
+    TMR0L = 0;
     
     ANSELD = 0;
     lcdInit();
 
     while(1){
-        sprintf(screenBuff, "%04d", segundo);
-        lcdString("Segundo = ");
+        timer_data.valores[0] = TMR0L;
+        timer_data.valores[1] = TMR0H;
+        
+        sprintf(screenBuff, "%05u", timer_data.result);
+        lcdString("Timer = ");
         lcdString(screenBuff);
         lcdSetCursor(1, 1);
+        __delay_ms(100);
     }
 }
