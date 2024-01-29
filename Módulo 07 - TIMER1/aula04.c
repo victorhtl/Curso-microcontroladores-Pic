@@ -31,7 +31,7 @@ void main(void) {
     PIE1bits.TMR1IE = 1;
     PIR1bits.TMR1IF = 0;
     
-    T1CON = 0b10000010;
+    T1CON = 0x86;
     TMR1H = 0xFF;
     TMR1L = 0XFA;
     T1CONbits.TMR1ON = 1;
