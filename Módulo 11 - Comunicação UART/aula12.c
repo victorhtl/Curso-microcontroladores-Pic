@@ -9,12 +9,16 @@
 
 void __interrupt(high_priority) interrupcao_alta(void){   
     
+    char dado;
+
     // Tratamento de Erro
     if(RCSTA1bits.OERR){
         RCSTA1bits.CREN = 0;
         RCSTA1bits.CREN = 1;
         uartString("erro");
     }
+
+    // dado = uartReceive();
     
     PIR1bits.RC1IF = 0;
 }
